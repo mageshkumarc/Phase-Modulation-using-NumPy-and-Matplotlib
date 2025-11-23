@@ -27,13 +27,63 @@ o	Use Matplotlib to plot the message signal, carrier signal, and phase-modulated
 
 
 ### Program
+```
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import hilbert
 
+Ac = 17.2       
+Am = 8.6       
+fc = 8430    
+fm = 843       
+fs = 84300   
+kp = np.pi / 4 
+
+
+t = np.arange(0, 2/fm, 1/fs)
+m = Am * np.cos(2 * np.pi * fm * t)
+c = Ac * np.cos(2 * np.pi * fc * t)
+s = Ac * np.cos(2 * np.pi * fc * t + kp * m)
+
+analytic_signal = hilbert(s)
+inst_phase = np.unwrap(np.angle(analytic_signal))
+m_demod = (inst_phase - 2 * np.pi * fc * t) / kp
+m_demod = m_demod - np.mean(m_demod)  
+plt.figure(figsize=(10, 8))
+
+plt.subplot(4, 1, 1)
+plt.plot(t, m, color='blue')
+plt.title('Message Signal')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude (V)')
+
+plt.subplot(4, 1, 2)
+plt.plot(t, c, color='orange')
+plt.title('Carrier Signal')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude (V)')
+
+plt.subplot(4, 1, 3)
+plt.plot(t, s, color='green')
+plt.title('Phase Modulated (PM) Signal')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude (V)')
+
+plt.subplot(4, 1, 4)
+plt.plot(t, m_demod, color='red')
+plt.title('Demodulated (Recovered) Signal')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude (V)')
+
+plt.tight_layout()
+plt.show()
+```
 
 ### Tabulation
-
+![WhatsApp Image 2025-11-23 at 11 48 52_665aca6e](https://github.com/user-attachments/assets/af6f32f4-41fc-423d-9cea-52e45d684608)
 
 ### Output
-
+<img width="989" height="790" alt="AC EXP9" src="https://github.com/user-attachments/assets/59dfde39-fb04-4a3d-a009-34131cde0334" />
 
 ### Result
-
+The message signal, carrier signal, and phase-modulated (PM) signal will be displayed in separate plots. The modulated signal will show phase variations corresponding to the amplitude of the message signal.
